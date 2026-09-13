@@ -39,7 +39,7 @@ const App: React.FC = () => {
       });
       setSelectedNodeId(null);
     } catch (e: any) {
-      // Ignorujemy błędy składniowe podczas pisania, błąd pokażemy dopiero po kliknięciu Apply
+      // Ignore syntax errors during typing, display error only after clicking Apply
     }
   }, [expression]);
 
@@ -60,7 +60,7 @@ const App: React.FC = () => {
       setError(null);
     } catch (e: any) {
       console.error(e);
-      setError('Błąd w wyrażeniu lub podczas obliczeń: ' + (e.message || ''));
+      setError('Expression or calculation error: ' + (e.message || ''));
     }
   };
 
@@ -79,7 +79,7 @@ const App: React.FC = () => {
         
         <div className={styles.controls}>
           <div className={styles.inputGroup}>
-            <label>Funkcja f = </label>
+            <label>Function f = </label>
             <input 
               type="text" 
               value={expression} 

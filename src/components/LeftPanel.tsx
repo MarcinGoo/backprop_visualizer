@@ -12,7 +12,7 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
 
   return (
     <div className={styles.panel}>
-      <h3>Zapis Matematyczny (Global Trace)</h3>
+      <h3>Math Breakdown (Global Trace)</h3>
       <div className={styles.scrollArea}>
       
         {graph.nodes.map((node) => {
@@ -22,14 +22,14 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
           return (
             <div key={node.id} className={styles.nodeRow}>
               <div className={styles.nodeHeader}>
-                Węzeł: <InlineMath math={data.vName || ''} /> {data.label !== data.vName && <span style={{fontSize: '0.8em', color: '#94a3b8'}}>({data.label})</span>}
+                Node: <InlineMath math={data.vName || ''} /> {data.label !== data.vName && <span style={{fontSize: '0.8em', color: '#94a3b8'}}>({data.label})</span>}
               </div>
               
               <div className={styles.nodeBody}>
                 {/* FORWARD PASS */}
                 <div className={styles.passBox}>
                   <div className={styles.passTitleWrapper}>
-                    <span className={styles.passTitleText}>Forward Pass</span>
+                    <span className={styles.passTitleText}>Forward Pass</span> <InlineMath math={data.vName || ''} />
                   </div>
                   <div className={styles.mathLine}>
                     <InlineMath math={`${data.vName} = ${data.forwardEquation}${data.value !== null ? ` = ${data.value.toFixed(4)}` : ''}`} />
@@ -39,10 +39,10 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
                 {/* BACKWARD PASS */}
                 <div className={styles.passBox}>
                   <div className={styles.passTitleWrapper}>
-                    <span className={styles.passTitleText}>Backward Pass</span>
+                    <span className={styles.passTitleText}>Backward Pass</span> <InlineMath math={`\\frac{\\partial L}{\\partial ${data.vName}}`} />
                   </div>
                   {!hasBackprop ? (
-                    <p className={styles.muted}>Brak obliczeń (uruchom Backward Pass).</p>
+                    <p className={styles.muted}>No calculations (run Backward Pass).</p>
                   ) : (!data.gradientContributions || data.gradientContributions.length === 0) ? (
                     <div className={styles.mathLine}>
                       <InlineMath math={`${data.vName}' = \\frac{\\partial L}{\\partial ${data.vName}} = 1`} />

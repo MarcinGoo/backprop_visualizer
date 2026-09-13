@@ -12,7 +12,7 @@ const StepByStepPanel: React.FC<StepByStepPanelProps> = ({ graph }) => {
 
   return (
     <div className={styles.panel}>
-      <h3>Zapis Matematyczny (Step-by-Step Backpropagation)</h3>
+      <h3>Math Breakdown (Step-by-Step Backpropagation)</h3>
       <div className={styles.scrollArea}>
       
         {[...graph.nodes].reverse().map((node) => {
@@ -22,20 +22,20 @@ const StepByStepPanel: React.FC<StepByStepPanelProps> = ({ graph }) => {
           return (
             <div key={node.id} className={styles.nodeRow}>
               <div className={styles.nodeHeader}>
-                Węzeł: <InlineMath math={data.vName || ''} /> {data.label !== data.vName && <span style={{fontSize: '0.8em', color: '#94a3b8'}}>({data.label})</span>}
+                Node: <InlineMath math={data.vName || ''} /> {data.label !== data.vName && <span style={{fontSize: '0.8em', color: '#94a3b8'}}>({data.label})</span>}
               </div>
               
               <div className={styles.nodeBody}>
                 {/* BACKWARD PASS ONLY */}
                 <div className={styles.passBox}>
                   <div className={styles.passTitleWrapper}>
-                    <span className={styles.passTitleText}>Wyliczanie pochodnej całkowitej</span> <InlineMath math={`\\frac{\\partial L}{\\partial ${data.vName}}`} />
+                    <span className={styles.passTitleText}>Calculating total derivative</span> <InlineMath math={`\\frac{\\partial L}{\\partial ${data.vName}}`} />
                   </div>
                   {!hasBackprop ? (
-                    <p className={styles.muted}>Brak obliczeń (uruchom Backward Pass).</p>
+                    <p className={styles.muted}>No calculations (run Backward Pass).</p>
                   ) : (!data.gradientContributions || data.gradientContributions.length === 0) ? (
                     <div className={styles.mathLine}>
-                      <span className={styles.desc}>To jest węzeł wyjściowy (L).</span>
+                      <span className={styles.desc}>This is the output node (L).</span>
                       <br />
                       <br />
                       <BlockMath math={`${data.vName}' = \\frac{\\partial L}{\\partial ${data.vName}} = 1`} />
@@ -50,18 +50,18 @@ const StepByStepPanel: React.FC<StepByStepPanelProps> = ({ graph }) => {
                         {data.gradientContributions.map((c, idx) => (
                           <div key={idx} className={styles.stepBlock}>
                             <div className={styles.stepHeader}>
-                              Wkład od węzła <InlineMath math={c.parentVName} />:
+                              Contribution from node <InlineMath math={c.parentVName} />:
                             </div>
                             <div className={styles.mathLine}>
-                              <span className={styles.stepLabel}>Równanie (Forward):</span>
+                              <span className={styles.stepLabel}>Equation (Forward):</span>
                               <InlineMath math={`\\displaystyle ${c.parentVName} = ${c.parentForwardEquation}`} />
                             </div>
                             <div className={styles.mathLine}>
-                              <span className={styles.stepLabel}>Pochodna (z r. Forward):</span>
+                              <span className={styles.stepLabel}>Derivative (from Forward):</span>
                               <InlineMath math={`\\displaystyle \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.formula}`} />
                             </div>
                             <div className={styles.mathLine}>
-                              <span className={styles.stepLabel}>Pochodna (wartości):</span>
+                              <span className={styles.stepLabel}>Derivative (values):</span>
                               <InlineMath math={`\\displaystyle \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.substitutedFormula} = ${c.dParent_dChild.toFixed(4)}`} />
                             </div>
                           </div>
