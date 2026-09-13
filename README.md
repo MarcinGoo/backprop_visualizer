@@ -1,38 +1,31 @@
 # Backprop Visualizer
 
-Aplikacja edukacyjna służąca do wizualizacji działania propagacji w przód (Forward Pass) oraz wstecz (Backward Pass / Chain Rule) w grafach obliczeniowych (sieciach neuronowych).
+An educational application designed to visualize Forward Pass and Backward Pass (Chain Rule) operations within computational graphs (neural networks).
 
-Projekt został stworzony z użyciem **React**, **TypeScript** oraz **Vite**. Wykorzystuje bibliotekę **KaTeX** do profesjonalnego renderowania wzorów matematycznych oraz **React Flow** do interaktywnych wizualizacji grafu.
+The project was built using React, TypeScript, and Vite. It utilizes the KaTeX library for professional mathematical formula rendering and React Flow for interactive graph visualizations.
 
-## 🚀 Jak uruchomić projekt lokalnie?
+## How to run the project locally
 
-Aby uruchomić aplikację na własnym komputerze, upewnij się, że masz zainstalowanego **Node.js** (zalecana wersja 18+).
+To run the application on your computer, ensure you have Node.js installed (version 18+ is recommended).
 
-### Krok 1: Klonowanie repozytorium
-Skopiuj repozytorium na swój komputer przy użyciu Gita:
+### Step 1: Clone the repository
+Clone the repository to your local machine using Git:
 ```bash
 git clone https://github.com/MarcinGoo/backprop_visualizer.git
 cd backprop_visualizer
 ```
 
-### Krok 2: Instalacja zależności
-Zainstaluj wszystkie wymagane pakiety używając NPM:
+### Step 2: Install dependencies
+Install all required packages using NPM:
 ```bash
 npm install
 ```
 
-### Krok 3: Uruchomienie serwera deweloperskiego
-Odpal aplikację w trybie deweloperskim:
+### Step 3: Start the development server
+Run the application in development mode:
 ```bash
 npm run dev
 ```
-Domyślnie aplikacja będzie dostępna pod adresem: **http://localhost:5173**.
+By default, the application will be accessible at: http://localhost:5173.
 
----
 
-## 🛠 Jak zbudować wersję produkcyjną?
-Jeśli chcesz wygenerować zoptymalizowane pliki do wdrożenia (np. na zewnętrznym serwerze lub na GitHub Pages), uruchom polecenie:
-```bash
-npm run build
-```
-Zbudowane pliki frontendu (wraz z zoptymalizowanymi fontami KaTeX) znajdą się w folderze `dist/`.
