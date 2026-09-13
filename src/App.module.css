@@ -1,0 +1,145 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: #0f172a; /* Slate 900 */
+  color: #f8fafc; /* Slate 50 */
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon {
+  color: #38bdf8;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.funcInput {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #f8fafc;
+  font-family: 'Fira Code', monospace;
+  width: 250px;
+  transition: border-color 0.2s;
+}
+
+.funcInput:focus {
+  outline: none;
+  border-color: #38bdf8;
+}
+
+.varsGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.varInputGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.varInput {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  color: #f8fafc;
+  width: 60px;
+  font-family: 'Fira Code', monospace;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btnForward, .btnBackward {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnForward {
+  background: #3b82f6;
+  color: white;
+}
+
+.btnForward:hover {
+  background: #2563eb;
+}
+
+.btnBackward {
+  background: #f43f5e;
+  color: white;
+}
+
+.btnBackward:hover {
+  background: #e11d48;
+}
+
+.errorBanner {
+  background: #ef4444;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  font-weight: 500;
+  z-index: 9;
+}
+
+.mainContent {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.canvasContainer {
+  flex: 1;
+  position: relative;
+}

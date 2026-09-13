@@ -1,0 +1,108 @@
+.sidebar {
+  width: 350px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  color: #f8fafc;
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.empty {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.highlight {
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-left: 8px;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #f8fafc;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.section h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.valueRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.valBlue {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.valRed {
+  color: #f87171;
+  font-weight: 600;
+}
+
+.desc {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+.formulaBox {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.math {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  color: #a78bfa;
+}
