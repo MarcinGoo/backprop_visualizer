@@ -28,20 +28,19 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
               <div className={styles.nodeBody}>
                 {/* FORWARD PASS */}
                 <div className={styles.passBox}>
-                  <div className={styles.passTitle}>Forward Pass</div>
-                  <div className={styles.mathLine}>
-                    <InlineMath math={`${data.vName} = ${data.forwardEquation}`} />
+                  <div className={styles.passTitleWrapper}>
+                    <span className={styles.passTitleText}>Forward Pass</span>
                   </div>
-                  {data.value !== null && (
-                    <div className={styles.mathLine}>
-                      <span className={styles.valBlue}>Wynik (f): {data.value.toFixed(4)}</span>
-                    </div>
-                  )}
+                  <div className={styles.mathLine}>
+                    <InlineMath math={`${data.vName} = ${data.forwardEquation}${data.value !== null ? ` = ${data.value.toFixed(4)}` : ''}`} />
+                  </div>
                 </div>
                 
                 {/* BACKWARD PASS */}
                 <div className={styles.passBox}>
-                  <div className={styles.passTitle}>Backward Pass (Step-by-Step)</div>
+                  <div className={styles.passTitleWrapper}>
+                    <span className={styles.passTitleText}>Backward Pass</span>
+                  </div>
                   {!hasBackprop ? (
                     <p className={styles.muted}>Brak obliczeń (uruchom Backward Pass).</p>
                   ) : (!data.gradientContributions || data.gradientContributions.length === 0) ? (
@@ -51,31 +50,15 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
                   ) : (
                     <>
                       <div className={styles.mathLine}>
-                        <InlineMath math={`${data.vName}' = \\frac{\\partial L}{\\partial ${data.vName}} = ` + data.gradientContributions.map(c => `\\left( \\frac{\\partial L}{\\partial ${c.parentVName}} \\cdot \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} \\right)`).join(' + ')} />
+                        <InlineMath math={`${data.vName}' = \\frac{\\partial L}{\\partial ${data.vName}} = ` + data.gradientContributions.map(c => `\\frac{\\partial L}{\\partial ${c.parentVName}} \\cdot \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}}`).join(' + ')} />
                       </div>
-                      
-                      <div className={styles.stepsContainer} style={{ marginTop: '12px', borderLeft: '2px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
-                        {data.gradientContributions.map((c, idx) => (
-                          <div key={idx} style={{ marginBottom: '12px' }}>
-                            <div style={{ fontSize: '0.85em', color: '#94a3b8', marginBottom: '4px' }}>
-                              Dla gałęzi od <InlineMath math={c.parentVName} />:
-                            </div>
-                            <div className={styles.mathLine} style={{ fontSize: '0.9em', color: '#cbd5e1' }}>
-                              <span style={{color: '#64748b', marginRight: '8px'}}>Forward:</span>
-                              <InlineMath math={`${c.parentVName} = ${c.parentForwardEquation}`} />
-                            </div>
-                            <div className={styles.mathLine} style={{ fontSize: '0.9em' }}>
-                              <span style={{color: '#64748b', marginRight: '8px'}}>Pochodna:</span>
-                              <InlineMath math={`\\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.formula}`} />
-                            </div>
-                          </div>
-                        ))}
+                      <div className={styles.mathLine} style={{ color: '#94a3b8', paddingLeft: '10px' }}>
+                        <InlineMath math={`= ` + data.gradientContributions.map(c => `(${c.dL_dParent.toFixed(4)} \\cdot ${c.formula})`).join(' + ')} />
                       </div>
-
-                      <div className={styles.mathLine} style={{ color: '#94a3b8', marginTop: '8px' }}>
+                      <div className={styles.mathLine} style={{ color: '#94a3b8', paddingLeft: '10px' }}>
                         <InlineMath math={`= ` + data.gradientContributions.map(c => `(${c.dL_dParent.toFixed(4)} \\cdot ${c.dParent_dChild.toFixed(4)})`).join(' + ')} />
                       </div>
-                      <div className={styles.mathLine} style={{ color: '#f87171', fontWeight: 'bold' }}>
+                      <div className={styles.mathLine} style={{ color: '#f87171', paddingLeft: '10px', fontWeight: 'bold' }}>
                         <InlineMath math={`= ${data.globalGradient?.toFixed(4)}`} />
                       </div>
                     </>

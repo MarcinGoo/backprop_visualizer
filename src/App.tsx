@@ -2,14 +2,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import GraphCanvas from './components/GraphCanvas';
 import Sidebar from './components/Sidebar';
 import LeftPanel from './components/LeftPanel';
+import StepByStepPanel from './components/StepByStepPanel';
 import { buildGraph } from './engine/GraphBuilder';
 import type { Graph } from './engine/GraphBuilder';
 import { forwardPass, backwardPass } from './engine/ComputeEngine';
 import styles from './App.module.css';
-import { Calculator, Zap, FileText, Share2 } from 'lucide-react';
+import { Calculator, Zap, FileText, Share2, ListTree } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'graph' | 'trace'>('graph');
+  const [viewMode, setViewMode] = useState<'graph' | 'trace' | 'stepbystep'>('graph');
   const [expression, setExpression] = useState('x1 * x2 + sin(x1)');
   const [graph, setGraph] = useState<Graph | null>(null);
   const [variables, setVariables] = useState<string[]>([]);
@@ -95,10 +96,22 @@ const App: React.FC = () => {
           
           <div className={styles.actions}>
             <button 
-              onClick={() => setViewMode(prev => prev === 'graph' ? 'trace' : 'graph')} 
-              className={styles.btnToggleView}
+              onClick={() => setViewMode('graph')} 
+              className={`${styles.btnToggleView} ${viewMode === 'graph' ? styles.activeView : ''}`}
             >
-              {viewMode === 'graph' ? <><FileText size={16} /> Global Trace</> : <><Share2 size={16} /> Graf</>}
+              <Share2 size={16} /> Graf
+            </button>
+            <button 
+              onClick={() => setViewMode('trace')} 
+              className={`${styles.btnToggleView} ${viewMode === 'trace' ? styles.activeView : ''}`}
+            >
+              <FileText size={16} /> Global Trace
+            </button>
+            <button 
+              onClick={() => setViewMode('stepbystep')} 
+              className={`${styles.btnToggleView} ${viewMode === 'stepbystep' ? styles.activeView : ''}`}
+            >
+              <ListTree size={16} /> Step-by-Step
             </button>
             <button onClick={handleApply} className={styles.btnApply}>
               <Calculator size={16} /> Apply
@@ -110,9 +123,9 @@ const App: React.FC = () => {
       {error && <div className={styles.errorBanner}>{error}</div>}
 
       <main className={styles.mainContent}>
-        {viewMode === 'trace' ? (
-          <LeftPanel graph={graph} />
-        ) : (
+        {viewMode === 'trace' && <LeftPanel graph={graph} />}
+        {viewMode === 'stepbystep' && <StepByStepPanel graph={graph} />}
+        {viewMode === 'graph' && (
           <>
             <div className={styles.canvasContainer}>
               <GraphCanvas 

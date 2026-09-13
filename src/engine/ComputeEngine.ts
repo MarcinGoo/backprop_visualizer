@@ -62,6 +62,9 @@ export function forwardPass(graph: Graph, variableValues: Record<string, number>
           case 'exp': currNode.data.value = Math.exp(a); break;
           case 'log': currNode.data.value = Math.log(a); break;
         }
+      } else if (currNode.data.type === 'output') {
+        const [a] = inputs;
+        currNode.data.value = a;
       }
     }
     
@@ -136,33 +139,35 @@ export function backwardPass(graph: Graph): Graph {
         let dL_dRight = 0;
         let dLeftStr = '';
         let dRightStr = '';
+        let dLeftSubst = '';
+        let dRightSubst = '';
         
         switch (currNode.data.label) {
           case '+':
-            dL_dLeft = 1; dLeftStr = '1';
-            dL_dRight = 1; dRightStr = '1';
+            dL_dLeft = 1; dLeftStr = '1'; dLeftSubst = '1';
+            dL_dRight = 1; dRightStr = '1'; dRightSubst = '1';
             break;
           case '-':
-            dL_dLeft = 1; dLeftStr = '1';
-            dL_dRight = -1; dRightStr = '-1';
+            dL_dLeft = 1; dLeftStr = '1'; dLeftSubst = '1';
+            dL_dRight = -1; dRightStr = '-1'; dRightSubst = '-1';
             break;
           case '*':
-            dL_dLeft = rightNode?.data.value || 0; dLeftStr = rightNode?.data.vName || '';
-            dL_dRight = leftNode?.data.value || 0; dRightStr = leftNode?.data.vName || '';
+            dL_dLeft = rightNode?.data.value || 0; dLeftStr = rightNode?.data.vName || ''; dLeftSubst = `${dL_dLeft.toFixed(4)}`;
+            dL_dRight = leftNode?.data.value || 0; dRightStr = leftNode?.data.vName || ''; dRightSubst = `${dL_dRight.toFixed(4)}`;
             break;
           case '/':
             const vLeft = leftNode?.data.value || 0;
             const vRight = rightNode?.data.value || 1;
-            dL_dLeft = 1 / vRight; dLeftStr = `\\frac{1}{${rightNode?.data.vName}}`;
-            dL_dRight = -vLeft / (vRight * vRight); dRightStr = `-\\frac{${leftNode?.data.vName}}{${rightNode?.data.vName}^2}`;
+            dL_dLeft = 1 / vRight; dLeftStr = `\\frac{1}{${rightNode?.data.vName}}`; dLeftSubst = `\\frac{1}{${vRight.toFixed(4)}}`;
+            dL_dRight = -vLeft / (vRight * vRight); dRightStr = `-\\frac{${leftNode?.data.vName}}{${rightNode?.data.vName}^2}`; dRightSubst = `-\\frac{${vLeft.toFixed(4)}}{${vRight.toFixed(4)}^2}`;
             break;
           case '^':
             const base = leftNode?.data.value || 0;
             const exp = rightNode?.data.value || 0;
             dL_dLeft = exp * Math.pow(base, exp - 1);
-            dLeftStr = `${exp} \\cdot {${base}}^{${exp}-1}`;
+            dLeftStr = `${exp} \\cdot {${base}}^{${exp}-1}`; dLeftSubst = `${exp.toFixed(4)} \\cdot {${base.toFixed(4)}}^{${exp.toFixed(4)}-1}`;
             dL_dRight = Math.pow(base, exp) * Math.log(base);
-            dRightStr = `${base}^{${exp}} \\cdot \\ln(${base})`;
+            dRightStr = `${base}^{${exp}} \\cdot \\ln(${base})`; dRightSubst = `${base.toFixed(4)}^{${exp.toFixed(4)}} \\cdot \\ln(${base.toFixed(4)})`;
             break;
         }
         
@@ -174,7 +179,8 @@ export function backwardPass(graph: Graph): Graph {
             parentForwardEquation: currNode.data.forwardEquation || '',
             dL_dParent: currNode.data.globalGradient!,
             dParent_dChild: dL_dLeft,
-            formula: dLeftStr
+            formula: dLeftStr,
+            substitutedFormula: dLeftSubst
           });
         }
         if (rightNode) {
@@ -185,7 +191,8 @@ export function backwardPass(graph: Graph): Graph {
             parentForwardEquation: currNode.data.forwardEquation || '',
             dL_dParent: currNode.data.globalGradient!,
             dParent_dChild: dL_dRight,
-            formula: dRightStr
+            formula: dRightStr,
+            substitutedFormula: dRightSubst
           });
         }
       } else if (currNode.data.type === 'function') {
@@ -195,13 +202,14 @@ export function backwardPass(graph: Graph): Graph {
         
         let dL = 0;
         let dStr = '';
+        let dSubst = '';
         
         switch (currNode.data.label) {
-          case 'sin': dL = Math.cos(v); dStr = `\\cos(${childNode?.data.vName})`; break;
-          case 'cos': dL = -Math.sin(v); dStr = `-\\sin(${childNode?.data.vName})`; break;
-          case 'tan': dL = 1 / (Math.cos(v) * Math.cos(v)); dStr = `\\frac{1}{\\cos^2(${childNode?.data.vName})}`; break;
-          case 'exp': dL = Math.exp(v); dStr = `\\exp(${childNode?.data.vName})`; break;
-          case 'log': dL = 1 / v; dStr = `\\frac{1}{${childNode?.data.vName}}`; break;
+          case 'sin': dL = Math.cos(v); dStr = `\\cos(${childNode?.data.vName})`; dSubst = `\\cos(${v.toFixed(4)})`; break;
+          case 'cos': dL = -Math.sin(v); dStr = `-\\sin(${childNode?.data.vName})`; dSubst = `-\\sin(${v.toFixed(4)})`; break;
+          case 'tan': dL = 1 / (Math.cos(v) * Math.cos(v)); dStr = `\\frac{1}{\\cos^2(${childNode?.data.vName})}`; dSubst = `\\frac{1}{\\cos^2(${v.toFixed(4)})}`; break;
+          case 'exp': dL = Math.exp(v); dStr = `\\exp(${childNode?.data.vName})`; dSubst = `\\exp(${v.toFixed(4)})`; break;
+          case 'log': dL = 1 / v; dStr = `\\frac{1}{${childNode?.data.vName}}`; dSubst = `\\frac{1}{${v.toFixed(4)}}`; break;
         }
         
         if (childNode) {
@@ -212,7 +220,22 @@ export function backwardPass(graph: Graph): Graph {
             parentForwardEquation: currNode.data.forwardEquation || '',
             dL_dParent: currNode.data.globalGradient!,
             dParent_dChild: dL,
-            formula: dStr
+            formula: dStr,
+            substitutedFormula: dSubst
+          });
+        }
+      } else if (currNode.data.type === 'output') {
+        const children = inEdges.get(currId)!;
+        const childNode = nodeMap.get(children[0]);
+        if (childNode) {
+          childNode.data.globalGradient! += currNode.data.globalGradient! * 1;
+          childNode.data.gradientContributions!.push({
+            parentVName: currNode.data.vName!,
+            parentForwardEquation: currNode.data.forwardEquation || '',
+            dL_dParent: currNode.data.globalGradient!,
+            dParent_dChild: 1,
+            formula: '1',
+            substitutedFormula: '1'
           });
         }
       }

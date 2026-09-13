@@ -124,6 +124,12 @@
   border-color: rgba(99, 102, 241, 0.4);
 }
 
+.activeView {
+  background-color: rgba(99, 102, 241, 0.3) !important;
+  border-color: rgba(99, 102, 241, 0.6) !important;
+  color: #c7d2fe !important;
+}
+
 .btnApply {
   background-color: rgba(16, 185, 129, 0.1);
   color: #34d399;

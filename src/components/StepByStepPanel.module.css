@@ -73,13 +73,42 @@
 }
 
 .mathLine {
-  margin: 12px 0;
-  line-height: 1.8;
+  margin-top: 4px;
   font-size: 1.05rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 8px;
-  padding-top: 4px;
+}
+
+.desc {
+  font-size: 0.9em;
+  color: #94a3b8;
+}
+
+.stepsContainer {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stepBlock {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #3b82f6;
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.stepHeader {
+  font-size: 0.9em;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.stepLabel {
+  color: #64748b;
+  margin-right: 12px;
+  display: inline-block;
+  min-width: 160px;
 }
 
 .valBlue {

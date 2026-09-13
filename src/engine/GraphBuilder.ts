@@ -2,7 +2,7 @@ import { parse } from 'mathjs';
 
 export type NodeData = {
   label: string;
-  type: 'variable' | 'constant' | 'operator' | 'function';
+  type: 'variable' | 'constant' | 'operator' | 'function' | 'output';
   value: number | null; // Value after forward pass
   globalGradient: number | null; // dL/dNode after backward pass
   localGradients: Record<string, string>; // childId -> formula for dNode/dChild
@@ -18,6 +18,7 @@ export type NodeData = {
     dL_dParent: number;
     dParent_dChild: number;
     formula: string; // symbol/formula for the local derivative
+    substitutedFormula: string; // formula with values substituted
   }[];
 };
 
@@ -164,10 +165,37 @@ export function buildGraph(expression: string): Graph {
     throw new Error(`Unsupported node type: ${node.type}`);
   }
   
-  traverse(rootNode);
+  const rootId = traverse(rootNode);
+  
+  const lId = generateId('out');
+  nodes.push({
+    id: lId,
+    type: 'computeNode',
+    position: { x: 0, y: 0 },
+    data: {
+      label: 'L',
+      type: 'output',
+      value: null,
+      globalGradient: null,
+      localGradients: {},
+      gradientContributions: [],
+    }
+  });
+  edges.push({
+    id: `e_${rootId}_${lId}`,
+    source: rootId,
+    target: lId,
+  });
   
   // Post-processing to assign vNames and forwardEquations
   nodes.forEach((node, idx) => {
+    if (node.data.type === 'output') {
+      node.data.vName = 'L';
+      const rootNode = nodes.find(n => n.id === rootId);
+      node.data.forwardEquation = rootNode?.data.vName || '';
+      node.data.expandedEquation = rootNode?.data.expandedEquation || '';
+      return;
+    }
     node.data.vName = `v_{${idx + 1}}`;
     
     if (node.data.type === 'variable' || node.data.type === 'constant') {

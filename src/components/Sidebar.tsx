@@ -60,24 +60,6 @@ const Sidebar: React.FC<SidebarProps> = ({ node, onClose }) => {
               <div className={styles.math}>
                 <BlockMath math={`\\frac{\\partial L}{\\partial ${data.vName}} = ` + data.gradientContributions.map(c => `\\left( \\frac{\\partial L}{\\partial ${c.parentVName}} \\cdot \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} \\right)`).join(' + ')} />
               </div>
-              
-              <div style={{ marginTop: '12px', borderLeft: '2px solid rgba(255,255,255,0.1)', paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {data.gradientContributions.map((c, idx) => (
-                  <div key={idx}>
-                    <div style={{ fontSize: '0.85em', color: '#94a3b8', marginBottom: '4px' }}>
-                      Dla gałęzi od <InlineMath math={c.parentVName} />:
-                    </div>
-                    <div className={styles.math} style={{ fontSize: '0.9em', color: '#cbd5e1' }}>
-                      <span style={{color: '#64748b', marginRight: '8px'}}>Forward:</span>
-                      <InlineMath math={`${c.parentVName} = ${c.parentForwardEquation}`} />
-                    </div>
-                    <div className={styles.math} style={{ fontSize: '0.9em' }}>
-                      <span style={{color: '#64748b', marginRight: '8px'}}>Pochodna:</span>
-                      <InlineMath math={`\\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.formula}`} />
-                    </div>
-                  </div>
-                ))}
-              </div>
 
               <div className={styles.math} style={{ color: '#94a3b8', marginTop: '12px' }}>
                 <BlockMath math={`= ` + data.gradientContributions.map(c => `\\left( ${c.dL_dParent.toFixed(4)} \\cdot ${c.dParent_dChild.toFixed(4)} \\right)`).join(' + ')} />
