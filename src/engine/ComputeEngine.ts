@@ -128,6 +128,7 @@ export function backwardPass(graph: Graph): Graph {
     // For the current node, compute local gradients for its inputs (children)
     // and accumulate global gradient to them.
     const children = inEdges.get(currId)!;
+    const fmt = (n: number) => n < 0 ? `(${n.toFixed(4)})` : n.toFixed(4);
     
     if (children.length > 0) {
       if (currNode.data.type === 'operator') {
@@ -141,8 +142,6 @@ export function backwardPass(graph: Graph): Graph {
         let dRightStr = '';
         let dLeftSubst = '';
         let dRightSubst = '';
-        
-        const fmt = (n: number) => n < 0 ? `(${n.toFixed(4)})` : n.toFixed(4);
         
         switch (currNode.data.label) {
           case '+':
