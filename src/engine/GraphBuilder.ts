@@ -14,6 +14,7 @@ export type NodeData = {
   expandedEquation?: string;
   gradientContributions?: {
     parentVName: string;
+    parentForwardEquation: string;
     dL_dParent: number;
     dParent_dChild: number;
     formula: string; // symbol/formula for the local derivative

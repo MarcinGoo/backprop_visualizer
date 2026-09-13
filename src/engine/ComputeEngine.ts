@@ -171,6 +171,7 @@ export function backwardPass(graph: Graph): Graph {
           leftNode.data.globalGradient! += currNode.data.globalGradient! * dL_dLeft;
           leftNode.data.gradientContributions!.push({
             parentVName: currNode.data.vName!,
+            parentForwardEquation: currNode.data.forwardEquation || '',
             dL_dParent: currNode.data.globalGradient!,
             dParent_dChild: dL_dLeft,
             formula: dLeftStr
@@ -181,6 +182,7 @@ export function backwardPass(graph: Graph): Graph {
           rightNode.data.globalGradient! += currNode.data.globalGradient! * dL_dRight;
           rightNode.data.gradientContributions!.push({
             parentVName: currNode.data.vName!,
+            parentForwardEquation: currNode.data.forwardEquation || '',
             dL_dParent: currNode.data.globalGradient!,
             dParent_dChild: dL_dRight,
             formula: dRightStr
@@ -207,6 +209,7 @@ export function backwardPass(graph: Graph): Graph {
           childNode.data.globalGradient! += currNode.data.globalGradient! * dL;
           childNode.data.gradientContributions!.push({
             parentVName: currNode.data.vName!,
+            parentForwardEquation: currNode.data.forwardEquation || '',
             dL_dParent: currNode.data.globalGradient!,
             dParent_dChild: dL,
             formula: dStr

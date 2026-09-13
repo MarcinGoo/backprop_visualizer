@@ -12,7 +12,8 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 40px;
   padding: 16px 24px;
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(10px);
@@ -86,41 +87,52 @@
   color: #f8fafc;
   width: 60px;
   font-family: 'Fira Code', monospace;
+  -moz-appearance: textfield;
+}
+
+.varInput::-webkit-outer-spin-button,
+.varInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .actions {
   display: flex;
   gap: 12px;
+  margin-left: auto;
 }
 
-.btnForward, .btnBackward {
+.btnApply, .btnToggleView {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.btnForward {
-  background: #3b82f6;
-  color: white;
+.btnToggleView {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  border-color: rgba(99, 102, 241, 0.2);
+}
+.btnToggleView:hover {
+  background-color: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
 }
 
-.btnForward:hover {
-  background: #2563eb;
+.btnApply {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
-.btnBackward {
-  background: #f43f5e;
-  color: white;
-}
-
-.btnBackward:hover {
-  background: #e11d48;
+.btnApply:hover {
+  background-color: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
 }
 
 .errorBanner {

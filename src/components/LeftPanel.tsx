@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React from 'react';
 import type { Graph } from '../engine/GraphBuilder';
 import { InlineMath } from 'react-katex';
 import styles from './LeftPanel.module.css';
@@ -8,49 +8,14 @@ interface LeftPanelProps {
 }
 
 const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
-  const [width, setWidth] = useState(600);
-  const [isResizing, setIsResizing] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  const startResizing = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-  }, []);
-
-  const stopResizing = useCallback(() => {
-    setIsResizing(false);
-  }, []);
-
-  const resize = useCallback(
-    (e: MouseEvent) => {
-      if (isResizing && panelRef.current) {
-        const newWidth = e.clientX - panelRef.current.getBoundingClientRect().left;
-        setWidth(Math.max(300, Math.min(newWidth, window.innerWidth - 200)));
-      }
-    },
-    [isResizing]
-  );
-
-  useEffect(() => {
-    if (isResizing) {
-      window.addEventListener('mousemove', resize);
-      window.addEventListener('mouseup', stopResizing);
-    }
-    return () => {
-      window.removeEventListener('mousemove', resize);
-      window.removeEventListener('mouseup', stopResizing);
-    };
-  }, [isResizing, resize, stopResizing]);
-
   if (!graph) return null;
 
   return (
-    <div ref={panelRef} className={styles.panel} style={{ width: `${width}px` }}>
-      <div className={styles.resizer} onMouseDown={startResizing} />
+    <div className={styles.panel}>
       <h3>Zapis Matematyczny (Global Trace)</h3>
       <div className={styles.scrollArea}>
       
-        {[...graph.nodes].reverse().map((node) => {
+        {graph.nodes.map((node) => {
           const { data } = node;
           const hasBackprop = data.globalGradient !== null;
           
@@ -76,7 +41,7 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
                 
                 {/* BACKWARD PASS */}
                 <div className={styles.passBox}>
-                  <div className={styles.passTitle}>Backward Pass</div>
+                  <div className={styles.passTitle}>Backward Pass (Step-by-Step)</div>
                   {!hasBackprop ? (
                     <p className={styles.muted}>Brak obliczeń (uruchom Backward Pass).</p>
                   ) : (!data.gradientContributions || data.gradientContributions.length === 0) ? (
@@ -86,15 +51,31 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ graph }) => {
                   ) : (
                     <>
                       <div className={styles.mathLine}>
-                        <InlineMath math={`${data.vName}' = \\frac{\\partial L}{\\partial ${data.vName}} = ` + data.gradientContributions.map(c => `\\frac{\\partial L}{\\partial ${c.parentVName}} \\cdot \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}}`).join(' + ')} />
+                        <InlineMath math={`${data.vName}' = \\frac{\\partial L}{\\partial ${data.vName}} = ` + data.gradientContributions.map(c => `\\left( \\frac{\\partial L}{\\partial ${c.parentVName}} \\cdot \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} \\right)`).join(' + ')} />
                       </div>
-                      <div className={styles.mathLine} style={{ color: '#94a3b8', paddingLeft: '10px' }}>
-                        <InlineMath math={`= ` + data.gradientContributions.map(c => `(${c.dL_dParent.toFixed(4)} \\cdot ${c.formula})`).join(' + ')} />
+                      
+                      <div className={styles.stepsContainer} style={{ marginTop: '12px', borderLeft: '2px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
+                        {data.gradientContributions.map((c, idx) => (
+                          <div key={idx} style={{ marginBottom: '12px' }}>
+                            <div style={{ fontSize: '0.85em', color: '#94a3b8', marginBottom: '4px' }}>
+                              Dla gałęzi od <InlineMath math={c.parentVName} />:
+                            </div>
+                            <div className={styles.mathLine} style={{ fontSize: '0.9em', color: '#cbd5e1' }}>
+                              <span style={{color: '#64748b', marginRight: '8px'}}>Forward:</span>
+                              <InlineMath math={`${c.parentVName} = ${c.parentForwardEquation}`} />
+                            </div>
+                            <div className={styles.mathLine} style={{ fontSize: '0.9em' }}>
+                              <span style={{color: '#64748b', marginRight: '8px'}}>Pochodna:</span>
+                              <InlineMath math={`\\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.formula}`} />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className={styles.mathLine} style={{ color: '#94a3b8', paddingLeft: '10px' }}>
+
+                      <div className={styles.mathLine} style={{ color: '#94a3b8', marginTop: '8px' }}>
                         <InlineMath math={`= ` + data.gradientContributions.map(c => `(${c.dL_dParent.toFixed(4)} \\cdot ${c.dParent_dChild.toFixed(4)})`).join(' + ')} />
                       </div>
-                      <div className={styles.mathLine} style={{ color: '#f87171', paddingLeft: '10px', fontWeight: 'bold' }}>
+                      <div className={styles.mathLine} style={{ color: '#f87171', fontWeight: 'bold' }}>
                         <InlineMath math={`= ${data.globalGradient?.toFixed(4)}`} />
                       </div>
                     </>

@@ -1,25 +1,12 @@
 .panel {
+  width: 100%;
   position: relative;
-  /* width is now controlled via style attr, defaults to 600px via state */
   background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(12px);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.resizer {
-  position: absolute;
-  top: 0;
-  right: -5px;
-  width: 10px;
-  height: 100%;
-  cursor: col-resize;
-  z-index: 100;
-}
-.resizer:hover {
-  background: rgba(255, 255, 255, 0.1);
 }
 
 .panel h3 {

@@ -6,9 +6,10 @@ import { buildGraph } from './engine/GraphBuilder';
 import type { Graph } from './engine/GraphBuilder';
 import { forwardPass, backwardPass } from './engine/ComputeEngine';
 import styles from './App.module.css';
-import { Calculator, Zap } from 'lucide-react';
+import { Calculator, Zap, FileText, Share2 } from 'lucide-react';
 
 const App: React.FC = () => {
+  const [viewMode, setViewMode] = useState<'graph' | 'trace'>('graph');
   const [expression, setExpression] = useState('x1 * x2 + sin(x1)');
   const [graph, setGraph] = useState<Graph | null>(null);
   const [variables, setVariables] = useState<string[]>([]);
@@ -41,27 +42,15 @@ const App: React.FC = () => {
     }
   }, [expression]);
 
-  const handleForward = () => {
+  const handleApply = () => {
     if (!graph) return;
     try {
-      const computedGraph = forwardPass(graph, variableValues);
-      setGraph(computedGraph);
-    } catch (e) {
-      console.error(e);
-      setError('Błąd podczas Forward Pass');
-    }
-  };
-
-  const handleBackward = () => {
-    if (!graph) return;
-    try {
-      // Must do forward pass first to have values for local gradients
       const computedGraph = forwardPass(graph, variableValues);
       const backwardGraph = backwardPass(computedGraph);
       setGraph(backwardGraph);
     } catch (e) {
       console.error(e);
-      setError('Błąd podczas Backward Pass');
+      setError('Błąd podczas obliczeń');
     }
   };
 
@@ -105,11 +94,14 @@ const App: React.FC = () => {
           </div>
           
           <div className={styles.actions}>
-            <button onClick={handleForward} className={styles.btnForward}>
-              <Calculator size={16} /> Forward Pass
+            <button 
+              onClick={() => setViewMode(prev => prev === 'graph' ? 'trace' : 'graph')} 
+              className={styles.btnToggleView}
+            >
+              {viewMode === 'graph' ? <><FileText size={16} /> Global Trace</> : <><Share2 size={16} /> Graf</>}
             </button>
-            <button onClick={handleBackward} className={styles.btnBackward}>
-              <Zap size={16} /> Backward Pass
+            <button onClick={handleApply} className={styles.btnApply}>
+              <Calculator size={16} /> Apply
             </button>
           </div>
         </div>
@@ -118,15 +110,20 @@ const App: React.FC = () => {
       {error && <div className={styles.errorBanner}>{error}</div>}
 
       <main className={styles.mainContent}>
-        <LeftPanel graph={graph} />
-        <div className={styles.canvasContainer}>
-          <GraphCanvas 
-            graph={graph} 
-            onNodeClick={setSelectedNodeId} 
-            selectedNodeId={selectedNodeId} 
-          />
-        </div>
-        <Sidebar node={selectedNode} onClose={() => setSelectedNodeId(null)} />
+        {viewMode === 'trace' ? (
+          <LeftPanel graph={graph} />
+        ) : (
+          <>
+            <div className={styles.canvasContainer}>
+              <GraphCanvas 
+                graph={graph} 
+                onNodeClick={setSelectedNodeId} 
+                selectedNodeId={selectedNodeId} 
+              />
+            </div>
+            <Sidebar node={selectedNode} onClose={() => setSelectedNodeId(null)} />
+          </>
+        )}
       </main>
     </div>
   );
