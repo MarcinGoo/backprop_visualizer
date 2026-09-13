@@ -142,6 +142,8 @@ export function backwardPass(graph: Graph): Graph {
         let dLeftSubst = '';
         let dRightSubst = '';
         
+        const fmt = (n: number) => n < 0 ? `(${n.toFixed(4)})` : n.toFixed(4);
+        
         switch (currNode.data.label) {
           case '+':
             dL_dLeft = 1; dLeftStr = '1'; dLeftSubst = '1';
@@ -152,22 +154,22 @@ export function backwardPass(graph: Graph): Graph {
             dL_dRight = -1; dRightStr = '-1'; dRightSubst = '-1';
             break;
           case '*':
-            dL_dLeft = rightNode?.data.value || 0; dLeftStr = rightNode?.data.vName || ''; dLeftSubst = `${dL_dLeft.toFixed(4)}`;
-            dL_dRight = leftNode?.data.value || 0; dRightStr = leftNode?.data.vName || ''; dRightSubst = `${dL_dRight.toFixed(4)}`;
+            dL_dLeft = rightNode?.data.value || 0; dLeftStr = rightNode?.data.vName || ''; dLeftSubst = `${fmt(dL_dLeft)}`;
+            dL_dRight = leftNode?.data.value || 0; dRightStr = leftNode?.data.vName || ''; dRightSubst = `${fmt(dL_dRight)}`;
             break;
           case '/':
             const vLeft = leftNode?.data.value || 0;
             const vRight = rightNode?.data.value || 1;
-            dL_dLeft = 1 / vRight; dLeftStr = `\\frac{1}{${rightNode?.data.vName}}`; dLeftSubst = `\\frac{1}{${vRight.toFixed(4)}}`;
-            dL_dRight = -vLeft / (vRight * vRight); dRightStr = `-\\frac{${leftNode?.data.vName}}{${rightNode?.data.vName}^2}`; dRightSubst = `-\\frac{${vLeft.toFixed(4)}}{(${vRight.toFixed(4)})^2}`;
+            dL_dLeft = 1 / vRight; dLeftStr = `\\frac{1}{${rightNode?.data.vName}}`; dLeftSubst = `\\frac{1}{${fmt(vRight)}}`;
+            dL_dRight = -vLeft / (vRight * vRight); dRightStr = `-\\frac{${leftNode?.data.vName}}{{${rightNode?.data.vName}}^2}`; dRightSubst = `-\\frac{${fmt(vLeft)}}{${fmt(vRight)}^2}`;
             break;
           case '^':
             const base = leftNode?.data.value || 0;
             const exp = rightNode?.data.value || 0;
             dL_dLeft = exp * Math.pow(base, exp - 1);
-            dLeftStr = `${exp} \\cdot {${leftNode?.data.vName}}^{${exp}-1}`; dLeftSubst = `${exp.toFixed(4)} \\cdot (${base.toFixed(4)})^{${exp.toFixed(4)}-1}`;
+            dLeftStr = `${exp} \\cdot {${leftNode?.data.vName}}^{${exp}-1}`; dLeftSubst = `${fmt(exp)} \\cdot {${fmt(base)}}^{${fmt(exp)}-1}`;
             dL_dRight = Math.pow(base, exp) * Math.log(base);
-            dRightStr = `{${leftNode?.data.vName}}^{${exp}} \\cdot \\ln(${leftNode?.data.vName})`; dRightSubst = `(${base.toFixed(4)})^{${exp.toFixed(4)}} \\cdot \\ln(${base.toFixed(4)})`;
+            dRightStr = `{${leftNode?.data.vName}}^{${exp}} \\cdot \\ln(${leftNode?.data.vName})`; dRightSubst = `{${fmt(base)}}^{${fmt(exp)}} \\cdot \\ln(${fmt(base)})`;
             break;
         }
         
@@ -205,11 +207,11 @@ export function backwardPass(graph: Graph): Graph {
         let dSubst = '';
         
         switch (currNode.data.label) {
-          case 'sin': dL = Math.cos(v); dStr = `\\cos(${childNode?.data.vName})`; dSubst = `\\cos(${v.toFixed(4)})`; break;
-          case 'cos': dL = -Math.sin(v); dStr = `-\\sin(${childNode?.data.vName})`; dSubst = `-\\sin(${v.toFixed(4)})`; break;
-          case 'tan': dL = 1 / (Math.cos(v) * Math.cos(v)); dStr = `\\frac{1}{\\cos^2(${childNode?.data.vName})}`; dSubst = `\\frac{1}{\\cos^2(${v.toFixed(4)})}`; break;
-          case 'exp': dL = Math.exp(v); dStr = `\\exp(${childNode?.data.vName})`; dSubst = `\\exp(${v.toFixed(4)})`; break;
-          case 'log': dL = 1 / v; dStr = `\\frac{1}{${childNode?.data.vName}}`; dSubst = `\\frac{1}{${v.toFixed(4)}}`; break;
+          case 'sin': dL = Math.cos(v); dStr = `\\cos(${childNode?.data.vName})`; dSubst = `\\cos(${fmt(v)})`; break;
+          case 'cos': dL = -Math.sin(v); dStr = `-\\sin(${childNode?.data.vName})`; dSubst = `-\\sin(${fmt(v)})`; break;
+          case 'tan': dL = 1 / (Math.cos(v) * Math.cos(v)); dStr = `\\frac{1}{\\cos^2(${childNode?.data.vName})}`; dSubst = `\\frac{1}{\\cos^2(${fmt(v)})}`; break;
+          case 'exp': dL = Math.exp(v); dStr = `\\exp(${childNode?.data.vName})`; dSubst = `\\exp(${fmt(v)})`; break;
+          case 'log': dL = 1 / v; dStr = `\\frac{1}{${childNode?.data.vName}}`; dSubst = `\\frac{1}{${fmt(v)}}`; break;
         }
         
         if (childNode) {

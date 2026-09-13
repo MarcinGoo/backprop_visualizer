@@ -54,22 +54,22 @@ const StepByStepPanel: React.FC<StepByStepPanelProps> = ({ graph }) => {
                             </div>
                             <div className={styles.mathLine}>
                               <span className={styles.stepLabel}>Równanie (Forward):</span>
-                              <InlineMath math={`${c.parentVName} = ${c.parentForwardEquation}`} />
+                              <InlineMath math={`\\displaystyle ${c.parentVName} = ${c.parentForwardEquation}`} />
                             </div>
                             <div className={styles.mathLine}>
                               <span className={styles.stepLabel}>Pochodna (z r. Forward):</span>
-                              <InlineMath math={`\\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.formula}`} />
+                              <InlineMath math={`\\displaystyle \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.formula}`} />
                             </div>
                             <div className={styles.mathLine}>
                               <span className={styles.stepLabel}>Pochodna (wartości):</span>
-                              <InlineMath math={`\\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.substitutedFormula} = ${c.dParent_dChild.toFixed(4)}`} />
+                              <InlineMath math={`\\displaystyle \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} = ${c.substitutedFormula} = ${c.dParent_dChild.toFixed(4)}`} />
                             </div>
                           </div>
                         ))}
                       </div>
 
                       <div className={styles.mathLine} style={{ color: '#94a3b8', marginTop: '16px' }}>
-                        <BlockMath math={`= ` + data.gradientContributions.map(c => `\\left( ${c.dL_dParent.toFixed(4)} \\cdot ${c.dParent_dChild.toFixed(4)} \\right)`).join(' + ')} />
+                        <BlockMath math={`= ` + data.gradientContributions.map(c => `\\left( ${c.dL_dParent.toFixed(4)} \\cdot ${c.dParent_dChild < 0 ? `(${c.dParent_dChild.toFixed(4)})` : c.dParent_dChild.toFixed(4)} \\right)`).join(' + ')} />
                       </div>
                       <div className={styles.mathLine} style={{ color: '#f87171', fontWeight: 'bold' }}>
                         <BlockMath math={`= ${data.globalGradient?.toFixed(4)}`} />
