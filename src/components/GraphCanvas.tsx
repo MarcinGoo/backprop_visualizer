@@ -10,10 +10,12 @@ import type { Edge, Node } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import * as dagre from 'dagre';
 import ComputeNode from './ComputeNode';
+import OpNode from './OpNode';
 import type { Graph } from '../engine/GraphBuilder';
 
 const nodeTypes = {
   computeNode: ComputeNode,
+  opNode: OpNode,
 };
 
 interface GraphCanvasProps {
@@ -29,7 +31,9 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => 
   dagreGraph.setGraph({ rankdir: direction, nodesep: 100, edgesep: 50, ranksep: 100 });
   
   nodes.forEach((node) => {
-    dagreGraph.setNode(node.id, { width: 150, height: 100 }); // Approximate dimensions
+    const width = node.type === 'opNode' ? 40 : 150;
+    const height = node.type === 'opNode' ? 40 : 100;
+    dagreGraph.setNode(node.id, { width, height });
   });
   
   edges.forEach((edge) => {
@@ -45,10 +49,12 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => 
   
   nodes.forEach((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
+    const width = node.type === 'opNode' ? 40 : 150;
+    const height = node.type === 'opNode' ? 40 : 100;
     // adjust positioning to center
     node.position = {
-      x: nodeWithPosition.x - 75,
-      y: nodeWithPosition.y - 50,
+      x: nodeWithPosition.x - width / 2,
+      y: nodeWithPosition.y - height / 2,
     };
   });
   
@@ -61,23 +67,49 @@ const GraphCanvas: React.FC<GraphCanvasProps> = ({ graph, onNodeClick, selectedN
   
   useEffect(() => {
     if (graph) {
-      const rfNodes: Node[] = graph.nodes.map(n => ({
-        id: n.id,
-        type: n.type,
-        position: n.position,
-        data: {
-          ...n.data,
-        }
-      }));
+      const rfNodes: Node[] = [];
+      const rfEdges: Edge[] = [];
       
-      const rfEdges: Edge[] = graph.edges.map(e => ({
-        id: e.id,
-        source: e.source,
-        target: e.target,
-        type: 'straight',
-        animated: false,
-        style: { stroke: '#475569', strokeWidth: 2 },
-      }));
+      graph.nodes.forEach(n => {
+        rfNodes.push({
+          id: n.id,
+          type: n.type,
+          position: n.position,
+          data: { ...n.data }
+        });
+        
+        if (n.data.type === 'operator' || n.data.type === 'function') {
+          rfNodes.push({
+            id: `op_${n.id}`,
+            type: 'opNode',
+            position: { x: 0, y: 0 },
+            data: { label: n.data.label }
+          });
+          
+          rfEdges.push({
+            id: `e_op_${n.id}_${n.id}`,
+            source: `op_${n.id}`,
+            target: n.id,
+            type: 'straight',
+            animated: false,
+            style: { stroke: '#475569', strokeWidth: 2 },
+          });
+        }
+      });
+      
+      graph.edges.forEach(e => {
+        const targetNode = graph.nodes.find(n => n.id === e.target);
+        const isTargetOp = targetNode && (targetNode.data.type === 'operator' || targetNode.data.type === 'function');
+        
+        rfEdges.push({
+          id: e.id,
+          source: e.source,
+          target: isTargetOp ? `op_${e.target}` : e.target,
+          type: 'straight',
+          animated: false,
+          style: { stroke: '#475569', strokeWidth: 2 },
+        });
+      });
       
       const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
         rfNodes,
@@ -105,6 +137,7 @@ const GraphCanvas: React.FC<GraphCanvasProps> = ({ graph, onNodeClick, selectedN
   }, [selectedNodeId, setNodes]);
   
   const onNodeClickInternal = useCallback((_: React.MouseEvent, node: Node) => {
+    if (node.id.startsWith('op_')) return;
     onNodeClick(node.id);
   }, [onNodeClick]);
   
