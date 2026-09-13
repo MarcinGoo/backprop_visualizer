@@ -39,24 +39,28 @@ const App: React.FC = () => {
       });
       setSelectedNodeId(null);
     } catch (e: any) {
-      setError('Błąd w wyrażeniu: ' + e.message);
+      // Ignorujemy błędy składniowe podczas pisania, błąd pokażemy dopiero po kliknięciu Apply
     }
   }, [expression]);
 
   const handleApply = () => {
-    if (!graph) return;
     try {
+      const g = buildGraph(expression);
+      setGraph(g);
+      setVariables(g.variables);
+      
       const parsedValues: Record<string, number> = {};
       for (const [k, v] of Object.entries(variableValues)) {
         const val = typeof v === 'string' ? parseFloat(v) : v;
         parsedValues[k] = isNaN(val) ? 0 : val;
       }
-      const computedGraph = forwardPass(graph, parsedValues);
+      const computedGraph = forwardPass(g, parsedValues);
       const backwardGraph = backwardPass(computedGraph);
       setGraph(backwardGraph);
-    } catch (e) {
+      setError(null);
+    } catch (e: any) {
       console.error(e);
-      setError('Błąd podczas obliczeń');
+      setError('Błąd w wyrażeniu lub podczas obliczeń: ' + (e.message || ''));
     }
   };
 
