@@ -1,32 +1,38 @@
-# React + TypeScript + Vite
+# Backprop Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplikacja edukacyjna służąca do wizualizacji działania propagacji w przód (Forward Pass) oraz wstecz (Backward Pass / Chain Rule) w grafach obliczeniowych (sieciach neuronowych).
 
-Currently, two official plugins are available:
+Projekt został stworzony z użyciem **React**, **TypeScript** oraz **Vite**. Wykorzystuje bibliotekę **KaTeX** do profesjonalnego renderowania wzorów matematycznych oraz **React Flow** do interaktywnych wizualizacji grafu.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Jak uruchomić projekt lokalnie?
 
-## React Compiler
+Aby uruchomić aplikację na własnym komputerze, upewnij się, że masz zainstalowanego **Node.js** (zalecana wersja 18+).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+### Krok 1: Klonowanie repozytorium
+Skopiuj repozytorium na swój komputer przy użyciu Gita:
+```bash
+git clone https://github.com/MarcinGoo/backprop_visualizer.git
+cd backprop_visualizer
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### Krok 2: Instalacja zależności
+Zainstaluj wszystkie wymagane pakiety używając NPM:
+```bash
+npm install
+```
+
+### Krok 3: Uruchomienie serwera deweloperskiego
+Odpal aplikację w trybie deweloperskim:
+```bash
+npm run dev
+```
+Domyślnie aplikacja będzie dostępna pod adresem: **http://localhost:5173**.
+
+---
+
+## 🛠 Jak zbudować wersję produkcyjną?
+Jeśli chcesz wygenerować zoptymalizowane pliki do wdrożenia (np. na zewnętrznym serwerze lub na GitHub Pages), uruchom polecenie:
+```bash
+npm run build
+```
+Zbudowane pliki frontendu (wraz z zoptymalizowanymi fontami KaTeX) znajdą się w folderze `dist/`.
