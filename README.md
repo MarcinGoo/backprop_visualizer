@@ -6,7 +6,15 @@ The project was built using React, TypeScript, and Vite. It utilizes the KaTeX l
 
 ## How to run the project locally
 
-To run the application on your computer, ensure you have Node.js installed (version 18+ is recommended).
+> [!IMPORTANT]
+> **Node.js Requirement:** This project uses Vite 8 and modern JavaScript features, which require **Node.js version 20 or higher**. If you are on an older version of Node (like v12 which is often the default in Ubuntu/WSL `apt` repositories), the application will crash during startup with a `SyntaxError: Unexpected token '.'`.
+> 
+> **How to install Node 20 via NVM (Linux/Mac/WSL):**
+> ```bash
+> curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+> source ~/.bashrc
+> nvm install 20
+> ```
 
 ### Step 1: Clone the repository
 Clone the repository to your local machine using Git:
