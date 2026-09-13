@@ -63,7 +63,7 @@ const App: React.FC = () => {
   return (
     <div className={styles.appContainer}>
       <header className={styles.header}>
-        <div className={styles.logo}>
+        <div className={styles.logo} onClick={() => setViewMode('graph')} style={{ cursor: 'pointer' }}>
           <Zap className={styles.icon} />
           <h1>Backprop Visualizer</h1>
         </div>
@@ -95,6 +95,9 @@ const App: React.FC = () => {
           </div>
           
           <div className={styles.actions}>
+            <button onClick={handleApply} className={styles.btnApply}>
+              <Calculator size={16} /> Apply
+            </button>
             <button 
               onClick={() => setViewMode('graph')} 
               className={`${styles.btnToggleView} ${viewMode === 'graph' ? styles.activeView : ''}`}
@@ -112,9 +115,6 @@ const App: React.FC = () => {
               className={`${styles.btnToggleView} ${viewMode === 'stepbystep' ? styles.activeView : ''}`}
             >
               <ListTree size={16} /> Step-by-Step
-            </button>
-            <button onClick={handleApply} className={styles.btnApply}>
-              <Calculator size={16} /> Apply
             </button>
           </div>
         </div>

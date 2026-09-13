@@ -140,6 +140,7 @@ const GraphCanvas: React.FC<GraphCanvasProps> = ({ graph, onNodeClick, selectedN
         nodeTypes={nodeTypes}
         onNodeClick={onNodeClickInternal}
         connectionMode={ConnectionMode.Loose}
+        proOptions={{ hideAttribution: true }}
         fitView
       >
         <Background color="#334155" gap={16} />

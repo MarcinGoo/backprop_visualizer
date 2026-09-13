@@ -159,15 +159,15 @@ export function backwardPass(graph: Graph): Graph {
             const vLeft = leftNode?.data.value || 0;
             const vRight = rightNode?.data.value || 1;
             dL_dLeft = 1 / vRight; dLeftStr = `\\frac{1}{${rightNode?.data.vName}}`; dLeftSubst = `\\frac{1}{${vRight.toFixed(4)}}`;
-            dL_dRight = -vLeft / (vRight * vRight); dRightStr = `-\\frac{${leftNode?.data.vName}}{${rightNode?.data.vName}^2}`; dRightSubst = `-\\frac{${vLeft.toFixed(4)}}{${vRight.toFixed(4)}^2}`;
+            dL_dRight = -vLeft / (vRight * vRight); dRightStr = `-\\frac{${leftNode?.data.vName}}{${rightNode?.data.vName}^2}`; dRightSubst = `-\\frac{${vLeft.toFixed(4)}}{(${vRight.toFixed(4)})^2}`;
             break;
           case '^':
             const base = leftNode?.data.value || 0;
             const exp = rightNode?.data.value || 0;
             dL_dLeft = exp * Math.pow(base, exp - 1);
-            dLeftStr = `${exp} \\cdot {${base}}^{${exp}-1}`; dLeftSubst = `${exp.toFixed(4)} \\cdot {${base.toFixed(4)}}^{${exp.toFixed(4)}-1}`;
+            dLeftStr = `${exp} \\cdot {${leftNode?.data.vName}}^{${exp}-1}`; dLeftSubst = `${exp.toFixed(4)} \\cdot (${base.toFixed(4)})^{${exp.toFixed(4)}-1}`;
             dL_dRight = Math.pow(base, exp) * Math.log(base);
-            dRightStr = `${base}^{${exp}} \\cdot \\ln(${base})`; dRightSubst = `${base.toFixed(4)}^{${exp.toFixed(4)}} \\cdot \\ln(${base.toFixed(4)})`;
+            dRightStr = `{${leftNode?.data.vName}}^{${exp}} \\cdot \\ln(${leftNode?.data.vName})`; dRightSubst = `(${base.toFixed(4)})^{${exp.toFixed(4)}} \\cdot \\ln(${base.toFixed(4)})`;
             break;
         }
         
