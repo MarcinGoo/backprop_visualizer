@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ node, onClose }) => {
         
         {data.gradientContributions && data.gradientContributions.length > 0 ? (
           <>
-            <div className={styles.formulaBox} style={{ flexDirection: 'column', alignItems: 'stretch', gap: '8px' }}>
+            <div className={styles.formulaBox}>
               <div className={styles.math}>
                 <BlockMath math={`\\frac{\\partial L}{\\partial ${data.vName}} = ` + data.gradientContributions.map(c => `\\left( \\frac{\\partial L}{\\partial ${c.parentVName}} \\cdot \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} \\right)`).join(' + ')} />
               </div>

@@ -14,7 +14,7 @@ const App: React.FC = () => {
   const [expression, setExpression] = useState('x1 * x2 + sin(x1)');
   const [graph, setGraph] = useState<Graph | null>(null);
   const [variables, setVariables] = useState<string[]>([]);
-  const [variableValues, setVariableValues] = useState<Record<string, number>>({
+  const [variableValues, setVariableValues] = useState<Record<string, number | string>>({
     x1: 2,
     x2: 3,
   });
@@ -46,7 +46,12 @@ const App: React.FC = () => {
   const handleApply = () => {
     if (!graph) return;
     try {
-      const computedGraph = forwardPass(graph, variableValues);
+      const parsedValues: Record<string, number> = {};
+      for (const [k, v] of Object.entries(variableValues)) {
+        const val = typeof v === 'string' ? parseFloat(v) : v;
+        parsedValues[k] = isNaN(val) ? 0 : val;
+      }
+      const computedGraph = forwardPass(graph, parsedValues);
       const backwardGraph = backwardPass(computedGraph);
       setGraph(backwardGraph);
     } catch (e) {
@@ -86,8 +91,8 @@ const App: React.FC = () => {
                 <label>{v} =</label>
                 <input 
                   type="number" 
-                  value={variableValues[v]} 
-                  onChange={e => setVariableValues({...variableValues, [v]: parseFloat(e.target.value) || 0})}
+                  value={variableValues[v] ?? 0} 
+                  onChange={e => setVariableValues({...variableValues, [v]: e.target.value})}
                   className={styles.varInput}
                 />
               </div>
