@@ -42,10 +42,6 @@ const Sidebar: React.FC<SidebarProps> = ({ node, onClose }) => {
             </div>
           </>
         )}
-        <div className={styles.valueRow}>
-          <span>Wynik (f):</span>
-          <span className={styles.valBlue}>{data.value !== null ? data.value.toFixed(4) : '-'}</span>
-        </div>
       </div>
       
       <div className={styles.section}>
@@ -61,19 +57,13 @@ const Sidebar: React.FC<SidebarProps> = ({ node, onClose }) => {
                 <BlockMath math={`\\frac{\\partial L}{\\partial ${data.vName}} = ` + data.gradientContributions.map(c => `\\left( \\frac{\\partial L}{\\partial ${c.parentVName}} \\cdot \\frac{\\partial ${c.parentVName}}{\\partial ${data.vName}} \\right)`).join(' + ')} />
               </div>
 
-              <div className={styles.math} style={{ color: '#94a3b8', marginTop: '12px' }}>
-                <BlockMath math={`= ` + data.gradientContributions.map(c => `\\left( ${c.dL_dParent.toFixed(4)} \\cdot ${c.dParent_dChild.toFixed(4)} \\right)`).join(' + ')} />
-              </div>
-              <div className={styles.math} style={{ color: '#f87171', fontWeight: 'bold' }}>
-                <BlockMath math={`= ${data.globalGradient?.toFixed(4)}`} />
-              </div>
             </div>
           </>
         ) : data.globalGradient !== null ? (
           <div className={styles.formulaBox} style={{ flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
             <span className={styles.math}>To jest węzeł wyjściowy (L).</span>
             <div className={styles.math} style={{ color: '#f87171', fontWeight: 'bold' }}>
-              <BlockMath math={`\\frac{\\partial L}{\\partial ${data.vName}} = ${data.globalGradient.toFixed(4)}`} />
+              <BlockMath math={`\\frac{\\partial L}{\\partial ${data.vName}} = 1`} />
             </div>
           </div>
         ) : (
